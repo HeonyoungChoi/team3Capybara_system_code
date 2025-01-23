@@ -1,0 +1,81 @@
+#define IN1 8  // Motor A direction control pin
+#define IN2 9  // Motor A direction control pin
+#define IN3 10 // Motor B direction control pin
+#define IN4 11 // Motor B direction control pin
+
+void setup() {
+  // Set pin modes for motor control
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+
+  Serial.begin(9600); // Start serial communication
+  stopMotors();       // Initialize with motors stopped
+}
+
+void loop() {
+  if (Serial.available()) {
+    // Read command from Serial Monitor
+    String command = Serial.readStringUntil('\n');
+    command.trim(); // Remove whitespace
+
+    // Execute commands based on the input
+    if (command == "go") {
+      goForward();
+    } else if (command == "back") {
+      goBackward();
+    } else if (command == "clk1") {
+      rotateClockwise();
+    } else if (command == "clk2") {
+      rotateCounterClockwise();
+    } else if (command == "stop") {
+      stopMotors();
+    }
+  }
+}
+
+// Move forward
+void goForward() {
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+}
+
+// Move backward
+void goBackward() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+}
+
+// Rotate clockwise
+void rotateClockwise() {
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+  delay(500); // Wait for 45-degree rotation (adjust based on motor specs)
+  stopMotors();
+}
+
+// Rotate counterclockwise
+void rotateCounterClockwise() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+  delay(500); // Wait for 45-degree rotation (adjust based on motor specs)
+  stopMotors();
+}
+
+// Stop all motors
+void stopMotors() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, LOW);
+}
+
